@@ -21,6 +21,5 @@ scipy==1.7.1
 six==1.16.0
 sklearn==0.0
 threadpoolctl==2.2.0
-win10toast @ file:///D:/bld/win10toast_1602828392649/work
 wincertstore==0.2
 win10toast ==0.9.0
