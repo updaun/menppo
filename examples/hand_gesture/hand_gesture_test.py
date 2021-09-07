@@ -14,7 +14,7 @@ kbControl = Controller()
 actions = ['go', 'back', 'start', 'finish']
 seq_length = 30
 
-model = load_model('models/model.h5')
+model = load_model('models/hand_model.h5')
 
 # MediaPipe hands model
 mp_hands = mp.solutions.hands
