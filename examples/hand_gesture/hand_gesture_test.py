@@ -140,6 +140,6 @@ while cap.isOpened():
             cv2.putText(img, f'{this_action.upper()}', org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
 
     cv2.imshow('img', img)
-    if cv2.waitKey(1) == ord('q'):
+    if cv2.waitKey(5) & 0xFF == 27:
         break
 
