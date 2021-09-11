@@ -38,7 +38,7 @@ while cap.isOpened():
     if not ret:
         break
 
-    img = cv2.flip(img, 1)
+    # img = cv2.flip(img, 1)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     result = holistic.process(img)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -76,8 +76,11 @@ while cap.isOpened():
         # input_shape = input_details[0]['shape']
         # input_data = np.array(np.random.random_sample(input_shape), dtype=np.float32)
         
+        # 시퀀스 데이터와 넘파이화
         input_data = np.expand_dims(np.array(seq[-seq_length:], dtype=np.float32), axis=0)
         input_data = np.array(input_data, dtype=np.float32)
+
+        # tflite 모델을 활용한 예측
         interpreter.set_tensor(input_details[0]['index'], input_data)
         interpreter.invoke()
 
@@ -103,16 +106,21 @@ while cap.isOpened():
             
 
         # cv2.putText(img, f'{this_action.upper()}', org=(int(result.face_landmarks.landmark[0].x * img.shape[1]), int(result.face_landmarks.landmark[0].y * img.shape[0] + 20)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
+        # 도식의 기준 좌표 생성 (왼쪽 귀)
         coords = tuple(np.multiply(
                         np.array(
                             (result.pose_landmarks.landmark[mp_holistic.PoseLandmark.LEFT_EAR].x, 
                                 result.pose_landmarks.landmark[mp_holistic.PoseLandmark.LEFT_EAR].y))
                     , [640,480]).astype(int))
         
+        # 사각형 그리기
         cv2.rectangle(img, 
+                        # 사각형의 왼쪽 위
                         (coords[0], coords[1]+5), 
+                        # 사각형의 오른쪽 아래
                         (coords[0]+len(this_action)*20, coords[1]-30), 
-                        (245, 117, 16), -1)
+                        (245, 117, 16), -1) # -1 사각형 안을 가득 채운다.
+        # 어떤 액션인지 글자 표시
         cv2.putText(img, this_action, coords, 
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
         

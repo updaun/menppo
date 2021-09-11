@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 
 # Load TFLite model and allocate tensors.
-interpreter = tf.lite.Interpreter(model_path="models/test_model.tflite")
+interpreter = tf.lite.Interpreter(model_path="models/emotion_test_model.tflite")
 interpreter.allocate_tensors()
 
 # Get input and output tensors.
@@ -19,4 +19,5 @@ interpreter.invoke()
 # The function `get_tensor()` returns a copy of the tensor data.
 # Use `tensor()` in order to get a pointer to the tensor.
 output_data = interpreter.get_tensor(output_details[0]['index'])
-print(output_data['result'])
+# print(output_data['result'])
+print(output_data[0])
