@@ -78,7 +78,7 @@ while cap.isOpened():
                 mp_drawing.draw_landmarks(img, result.face_landmarks, mp_holistic.FACE_CONNECTIONS)
 
             cv2.imshow('img', img)
-            if cv2.waitKey(1) == ord('q'):
+            if cv2.waitKey(5) & 0xFF == 27:
                 break
 
         data = np.array(data)
