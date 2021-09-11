@@ -72,17 +72,16 @@ while cap.isOpened():
         if len(seq) < seq_length:
             continue
 
-        
-
         # Test model on random input data.
         # input_shape = input_details[0]['shape']
         # input_data = np.array(np.random.random_sample(input_shape), dtype=np.float32)
+        
         input_data = np.expand_dims(np.array(seq[-seq_length:], dtype=np.float32), axis=0)
         input_data = np.array(input_data, dtype=np.float32)
         interpreter.set_tensor(input_details[0]['index'], input_data)
         interpreter.invoke()
-        y_pred = interpreter.get_tensor(output_details[0]['index'])
 
+        y_pred = interpreter.get_tensor(output_details[0]['index'])
         i_pred = int(np.argmax(y_pred[0]))
         # conf = y_pred[i_pred]
 
@@ -103,9 +102,37 @@ while cap.isOpened():
                 last_action = this_action
             
 
-        cv2.putText(img, f'{this_action.upper()}', org=(int(result.face_landmarks.landmark[0].x * img.shape[1]), int(result.face_landmarks.landmark[0].y * img.shape[0] + 20)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
+        # cv2.putText(img, f'{this_action.upper()}', org=(int(result.face_landmarks.landmark[0].x * img.shape[1]), int(result.face_landmarks.landmark[0].y * img.shape[0] + 20)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
+        coords = tuple(np.multiply(
+                        np.array(
+                            (result.pose_landmarks.landmark[mp_holistic.PoseLandmark.LEFT_EAR].x, 
+                                result.pose_landmarks.landmark[mp_holistic.PoseLandmark.LEFT_EAR].y))
+                    , [640,480]).astype(int))
+        
+        cv2.rectangle(img, 
+                        (coords[0], coords[1]+5), 
+                        (coords[0]+len(this_action)*20, coords[1]-30), 
+                        (245, 117, 16), -1)
+        cv2.putText(img, this_action, coords, 
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+        
+        # Get status box
+        cv2.rectangle(img, (0,0), (250, 60), (245, 117, 16), -1)
+        
+        # Display Class
+        cv2.putText(img, 'CLASS'
+                    , (95,12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+        cv2.putText(img, this_action.split(' ')[0]
+                    , (90,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+        
+        # Display Probability
+        cv2.putText(img, 'PROB'
+                    , (15,12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+        cv2.putText(img, str(round(y_pred[0][np.argmax(y_pred[0])],2))
+                    , (10,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+
 
     cv2.imshow('img', img)
-    if cv2.waitKey(1) == ord('q'):
+    if cv2.waitKey(5) & 0xFF == 27:
         break
 
