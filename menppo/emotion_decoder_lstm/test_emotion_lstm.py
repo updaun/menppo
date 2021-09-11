@@ -9,7 +9,7 @@ from tensorflow.keras.models import load_model
 actions = ['easy', 'difficult']
 seq_length = 30
 
-model = load_model('models/emotion_model.h5')
+model = load_model('models/emotion_test_model.h5')
 
 # MediaPipe hands model
 mp_holistic = mp.solutions.holistic
@@ -29,7 +29,7 @@ while cap.isOpened():
     if not ret:
         break
 
-    img = cv2.flip(img, 1)
+    # img = cv2.flip(img, 1)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     result = holistic.process(img)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -70,7 +70,7 @@ while cap.isOpened():
         i_pred = int(np.argmax(y_pred))
         conf = y_pred[i_pred]
 
-        if conf < 0.9:
+        if conf < 0.6:
             continue
 
         action = actions[i_pred]
@@ -116,6 +116,7 @@ while cap.isOpened():
                     , (15,12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
         cv2.putText(img, str(round(y_pred[np.argmax(y_pred)],2))
                     , (10,40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+
 
     cv2.imshow('img', img)
     if cv2.waitKey(5) & 0xFF == 27:
