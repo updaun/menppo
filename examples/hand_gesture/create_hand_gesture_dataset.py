@@ -106,9 +106,8 @@ while cap.isOpened():
                     mp_drawing.draw_landmarks(img, res, mp_hands.HAND_CONNECTIONS)
             # 그림그린 이미지를 보여준다.
             cv2.imshow('img', img)
-            # 만약에 q를 누르면
-            if cv2.waitKey(1) == ord('q'):
-                # 반복문 종료 -> 캠이 한번 닫혀
+
+            if cv2.waitKey(5) & 0xFF == 27:
                 break
 
         # 감지된 데이터를 
